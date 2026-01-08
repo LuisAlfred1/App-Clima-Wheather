@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Lottie from "lottie-react";
+import cityAnimation from "../assets/clima.json";
 
 export const WeatherApp = () => {
   const [city, setCity] = useState("");
@@ -121,10 +123,24 @@ export const WeatherApp = () => {
       )}
 
       {!data && !isLoading && !error && (
-        <div className="text-center opacity-80 mt-20">
-          <img src="" alt="logo de ciudad" />
-          <p className="text-4xl font-medium">Busca una ciudad</p>
-          <p className="text-md mx-auto">Ejemplo: Guatemala, Madrid, Bogotá</p>
+        <div className="flex flex-col items-center text-center gap-4 animate-fade-in">
+          <Lottie
+            animationData={cityAnimation}
+            loop
+            className="w-54 h-54 opacity-90"
+          />
+
+          <p className="text-4xl font-medium tracking-tight">
+            Busca una ciudad
+          </p>
+
+          <p className="text-md opacity-70 max-w-sm">
+            Descubre el clima actual en cualquier lugar del mundo
+          </p>
+
+          <p className="text-sm opacity-60">
+            Ejemplo: Guatemala, Madrid, Bogotá
+          </p>
         </div>
       )}
 
