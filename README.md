@@ -1,8 +1,5 @@
 # WeatherApp
 
-**Visítalo aquí:**  
-https://app-clima-lr.netlify.app/
-
 WeatherApp es una aplicación web desarrollada con React y Vite que permite consultar el clima actual de cualquier ciudad del mundo en tiempo real, utilizando la API de OpenWeather. La aplicación cuenta con una interfaz moderna, animaciones sutiles y estilos dinámicos que cambian según las condiciones climáticas y el momento del día.
 
 ---
@@ -61,11 +58,10 @@ WeatherApp es una aplicación web desarrollada con React y Vite que permite cons
 - Búsqueda de clima por nombre de ciudad
 - Información meteorológica en tiempo real
 - Temperatura en grados Celsius
-- Descripción del clima en español
+- Descripción del clima
 - Humedad y velocidad del viento
 - Estilos dinámicos según el estado del clima
 - Detección de día y noche basada en el ícono del clima
-- Diseño responsive para dispositivos móviles y escritorio
 - Manejo de estados de carga y errores
 
 ---
@@ -78,5 +74,5 @@ WeatherApp es una aplicación web desarrollada con React y Vite que permite cons
 - OpenWeather API
 - Lottie (lottie-react)
 
-
+### Visítalo aquí:  https://app-clima-lr.netlify.app/
 
