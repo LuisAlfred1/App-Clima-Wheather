@@ -46,6 +46,13 @@ WeatherApp es una aplicación web desarrollada con React y Vite que permite cons
   />
 </p>
 
+### Vista móvil
+
+| Pantalla inicial | Modo nocturno | Clima nublado | Clima despejado |
+|-----------------|-----------------|---------------|---------------|
+| <img src="https://github.com/user-attachments/assets/12e4e02c-93b6-4cbb-92f6-750a5227cdff" width="250" /> | <img src="https://github.com/user-attachments/assets/112eab46-4962-4d75-b1f8-72d8e4f7cad6" width="250" /> | <img src="https://github.com/user-attachments/assets/b0789537-2f68-446c-ab6f-9715a12ed38c" width="250" /> | <img src="https://github.com/user-attachments/assets/abbbabb2-bc28-4839-af46-11bd5a480b49" width="250" /> |
+
+
 
 ---
 
@@ -58,7 +65,6 @@ WeatherApp es una aplicación web desarrollada con React y Vite que permite cons
 - Humedad y velocidad del viento
 - Estilos dinámicos según el estado del clima
 - Detección de día y noche basada en el ícono del clima
-- Animación inicial usando Lottie
 - Diseño responsive para dispositivos móviles y escritorio
 - Manejo de estados de carga y errores
 
