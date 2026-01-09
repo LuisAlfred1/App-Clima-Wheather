@@ -11,7 +11,7 @@ export const WeatherApp = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const urlBase = "https://api.openweathermap.org/data/2.5/weather";
-  const API_KEY = "bfaa726bc642969a81d49e80843e7e4c";
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
   // Función para actualizar el estado con el valor del input
   const handleChange = (e) => {
