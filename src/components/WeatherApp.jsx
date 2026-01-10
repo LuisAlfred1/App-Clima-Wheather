@@ -99,14 +99,20 @@ export const WeatherApp = () => {
       <div className="flex flex-col md:flex-row gap-4 md:justify-between md:items-center w-full">
         <h1 className="text-2xl font-semibold tracking-tight">WeatherApp</h1>
         <form onSubmit={handleSubmit} className="max-w-lg w-full">
-          <div className="flex gap-2">
+          <div className="flex gap-2 relative">
             <input
               type="text"
-              placeholder="Ingresa la ciudad, luego presiona enter"
+              placeholder="Ingresa la ciudad..."
               className="w-full px-5 py-3 rounded-2xl bg-white/40 backdrop-blur-md placeholder:text-black/50 outline-none transition"
               value={city}
               onChange={handleChange}
             />
+            <button
+              type="submit"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-black/70 hover:text-gray-800 cursor-pointer transition"
+            >
+              <i className="bi bi-search text-l"></i>
+            </button>
           </div>
         </form>
       </div>
@@ -117,9 +123,16 @@ export const WeatherApp = () => {
         </div>
       )}
       {error && (
-        <div className="bg-red-500/20 text-red-500 px-4 py-2 rounded-lg">
-          ❌ {error}
-        </div>
+        <section className="items-center flex min-h-100 text-red-500 px-4 py-2 rounded-lg text-xl">
+          <div className="flex flex-col items-center">
+            <img
+              src="./src/assets/error-icon.jpg"
+              alt="logoError"
+              className="w-24 h-24"
+            />
+            {error}
+          </div>
+        </section>
       )}
 
       {!data && !isLoading && !error && (
@@ -145,7 +158,7 @@ export const WeatherApp = () => {
       )}
 
       {data && (
-        <div>
+        <div className="w-full flex flex-col items-center">
           <div className="flex flex-col items-center text-center gap-1">
             <img
               src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
@@ -158,20 +171,28 @@ export const WeatherApp = () => {
             </p>
             <p className="text-sm opacity-70">{data.name}</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-center w-full max-w-5xl sm:mx-0 mx-auto mt-4">
-            <div className="p-6 bg-white/25 backdrop-blur-lg rounded-2xl shadow-md flex flex-col">
-              <p className="text-md opacity-80">Humedad</p>
-              <p className="text-4xl font-medium">{data?.main.humidity} %</p>
-            </div>
-            <div className="p-6 bg-white/25 backdrop-blur-lg rounded-2xl shadow-md flex flex-col">
-              <p className="text-md opacity-80">Descripción</p>
-              <p className="text-4xl font-medium">
-                {data?.weather?.[0]?.description}
-              </p>
-            </div>
-            <div className="p-6 bg-white/25 backdrop-blur-lg rounded-2xl shadow-md flex flex-col">
-              <p className="text-md opacity-80">Viento</p>
-              <p className="text-4xl font-medium">{data?.wind?.speed} m/s</p>
+          <div className="w-full px-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
+              <div className="p-8 bg-white/25 backdrop-blur-lg rounded-2xl shadow-md flex flex-col">
+                <p className="text-md opacity-80">
+                  <i className="bi bi-droplet-half"></i> Humedad
+                </p>
+                <p className="text-4xl font-medium">{data?.main.humidity} %</p>
+              </div>
+              <div className="p-8 bg-white/25 backdrop-blur-lg rounded-2xl shadow-md flex flex-col">
+                <p className="text-md opacity-80">
+                  <i className="bi bi-info-circle"></i> Descripción
+                </p>
+                <p className="text-4xl font-medium">
+                  {data?.weather?.[0]?.description}
+                </p>
+              </div>
+              <div className="p-8 bg-white/25 backdrop-blur-lg rounded-2xl shadow-md flex flex-col">
+                <p className="text-md opacity-80">
+                  <i className="bi bi-send"></i> Viento
+                </p>
+                <p className="text-4xl font-medium">{data?.wind?.speed} m/s</p>
+              </div>
             </div>
           </div>
         </div>
