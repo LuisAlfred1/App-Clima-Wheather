@@ -2,31 +2,85 @@ import { useState } from "react";
 import Lottie from "lottie-react";
 import cityAnimation from "../assets/clima.json";
 
+// Componente principal de la aplicación del clima
+// Contiene estado, llamadas a la API y la UI para mostrar el clima
 export const WeatherApp = () => {
+  // Texto ingresado por el usuario (ej: "Madrid")
   const [city, setCity] = useState("");
+  // Datos de la API de OpenWeather (objeto con main, weather, wind, etc.)
   const [data, setData] = useState(null);
-  // Estado para manejar errores
+  // Estado para manejar errores (mensajes amigables)
   const [error, setError] = useState(null);
-  // Estado para manejar la carga
+  // Estado para mostrar un spinner mientras se cargan datos
   const [isLoading, setIsLoading] = useState(false);
+  // Lista de sugerencias geocoding cuando el usuario escribe
+  const [suggestions, setSuggestions] = useState([]);
+  // Controla si se muestran las sugerencias debajo del input
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
+  // Configuración de la API
   const urlBase = "https://api.openweathermap.org/data/2.5/weather";
   const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
-  // Función para actualizar el estado con el valor del input
+  // Actualiza el estado del input y busca sugerencias de ciudades
   const handleChange = (e) => {
-    setCity(e.target.value);
+    const value = e.target.value;
+    setCity(value);
+    // Buscar sugerencias solo cuando el usuario escribe
+    fetchCities(value);
   };
 
-  //Manejo del submit del formulario
+  // Envío del formulario: previene recarga y consulta el clima por nombre
   const handleSubmit = (e) => {
     e.preventDefault();
     fetchClima();
   };
 
-  //Fetch a la API del clima (a implementar)
+  // Busca el clima usando coordenadas (usado al seleccionar una sugerencia)
+  const fetchClimaByCoords = async (lat, lon) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `${urlBase}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=es`
+      );
+
+      const result = await response.json();
+      setData(result);
+    } catch (error) {
+      setError("Error al obtener el clima");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Llama a la API de geocoding para obtener sugerencias de ciudades
+  const fetchCities = async (value) => {
+    if (value.length < 2) {
+      // Si el usuario escribió menos de 2 caracteres, no pedir sugerencias
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=5&appid=${API_KEY}`
+      );
+
+      const data = await res.json();
+      setSuggestions(data);
+      setShowSuggestions(true);
+    } catch (error) {
+      // Errores de sugerencias no deben romper la app: solo loguear
+      console.error("Error: ", error);
+    }
+  };
+
+  // Busca el clima utilizando el nombre de la ciudad ingresada
   const fetchClima = async () => {
-    // Validar que la ciudad no esté vacía
+    // Evitar peticiones vacías
     if (!city.trim()) return;
 
     setIsLoading(true);
@@ -37,6 +91,7 @@ export const WeatherApp = () => {
       );
 
       const result = await response.json();
+      // Si la API responde con error, mostrar mensaje al usuario
       if (result.cod != 200) {
         setError(result.message);
         setData(null);
@@ -50,25 +105,30 @@ export const WeatherApp = () => {
     }
   };
 
-  // Función para obtener los estilos según el clima
+  // Cuando el usuario selecciona una ciudad de las sugerencias
+  const handleSelectCity = (city) => {
+    // Mostrar ciudad seleccionada en el input y limpiar sugerencias
+    setCity(`${city.name}, ${city.country}`);
+    setSuggestions([]);
+    setShowSuggestions(false);
+    // Obtener clima por coordenadas para mayor precisión
+    fetchClimaByCoords(city.lat, city.lon);
+  };
+
+  // Determina clases CSS dinámicas según el clima y si es de día/noche
   const getWeatherStyles = () => {
-    // Si no hay datos, retornar una clase por defecto
+    // Si no hay datos, retornar una clase vacía (estilo por defecto)
     if (!data) return "";
 
-    // Obtener el estado del clima
+    // Estado principal del clima (Clear, Clouds, Rain, ...)
     const main = data.weather[0].main;
 
-    // Determinar si es de día o de noche
     const icon = data.weather[0].icon;
-
-    // Los íconos que terminan con "n" son de noche
     const isNight = icon.includes("n");
 
-    //Si es de noche, retornar estilos oscuros
     if (isNight)
       return "bg-linear-to-br from-slate-900 to-blue-900 text-white transition";
 
-    // Retornar estilos según el estado del clima
     switch (main) {
       case "Clear":
         return "bg-linear-to-br from-sky-300 to-orange-400 text-gray-900 transition";
@@ -103,10 +163,24 @@ export const WeatherApp = () => {
             <input
               type="text"
               placeholder="Ingresa la ciudad..."
-              className="w-full px-5 py-3 rounded-2xl bg-white/40 backdrop-blur-md placeholder:text-black/50 outline-none transition"
+              className="relative w-full px-5 py-3 rounded-2xl bg-white/40 backdrop-blur-md placeholder:text-black/60 outline-none transition"
               value={city}
               onChange={handleChange}
             />
+            {showSuggestions && suggestions.length > 0 && (
+              <ul className="absolute top-full left-0 w-full bg-white/40 backdrop-blur-md rounded-xl shadow-lg mt-2 overflow-hidden z-50">
+                {suggestions.map((city, index) => (
+                  <li
+                    key={index}
+                    onClick={() => handleSelectCity(city)}
+                    className="px-4 py-3 cursor-pointer hover:bg-white/20 transition"
+                  >
+                    {city.name}
+                    {city.state && `, ${city.state}`} — {city.country}
+                  </li>
+                ))}
+              </ul>
+            )}
             <button
               type="submit"
               className="absolute right-4 top-1/2 -translate-y-1/2 text-black/70 hover:text-gray-800 cursor-pointer transition"
