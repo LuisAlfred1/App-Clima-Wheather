@@ -1,4 +1,5 @@
 # WeatherApp
+**Actualizando app..**
 
 WeatherApp es una aplicación web desarrollada con React y Vite que permite consultar el clima actual de cualquier ciudad del mundo en tiempo real, utilizando la API de OpenWeather. La aplicación cuenta con animaciones sutiles y estilos dinámicos que cambian según las condiciones climáticas y el momento del día.
 
