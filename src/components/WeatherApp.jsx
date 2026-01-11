@@ -17,6 +17,8 @@ export const WeatherApp = () => {
   const [suggestions, setSuggestions] = useState([]);
   // Controla si se muestran las sugerencias debajo del input
   const [showSuggestions, setShowSuggestions] = useState(false);
+  // Controla la sugerencia seleccionada con el teclado
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   // Configuración de la API
   const urlBase = "https://api.openweathermap.org/data/2.5/weather";
@@ -151,6 +153,33 @@ export const WeatherApp = () => {
     }
   };
 
+  //Función para manejar las teclas en el input
+  const handleKeyDown = (e) => {
+    if (!showSuggestions || suggestions.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
+    }
+
+    if (e.key === "Enter") {
+      if (activeIndex >= 0) {
+        e.preventDefault();
+        handleSelectCity(suggestions[activeIndex]);
+      }
+    }
+
+    if (e.key === "Escape") {
+      setShowSuggestions(false);
+      setActiveIndex(-1);
+    }
+  };
+
   return (
     //Llamar la función getWeatherStyles para aplicar los estilos dinámicos en el contenedor principal
     <section
@@ -166,14 +195,18 @@ export const WeatherApp = () => {
               className="relative w-full px-5 py-3 rounded-2xl bg-white/40 backdrop-blur-md placeholder:text-black/60 outline-none transition"
               value={city}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
             />
             {showSuggestions && suggestions.length > 0 && (
               <ul className="absolute top-full left-0 w-full bg-white/40 backdrop-blur-md rounded-xl shadow-lg mt-2 overflow-hidden z-50">
                 {suggestions.map((city, index) => (
                   <li
-                    key={index}
+                    key={`${city.lat}-${city.lon}`}
                     onClick={() => handleSelectCity(city)}
-                    className="px-4 py-3 cursor-pointer hover:bg-white/20 transition"
+                    className={`px-4 py-3 cursor-pointer transition
+      ${
+        index === activeIndex ? "bg-white/20 font-medium" : "hover:bg-white/60"
+      }`}
                   >
                     {city.name}
                     {city.state && `, ${city.state}`} — {city.country}
@@ -232,7 +265,7 @@ export const WeatherApp = () => {
       )}
 
       {data && (
-        <div className="w-full flex flex-col items-center">
+        <div className="w-full flex flex-col items-center transition">
           <div className="flex flex-col items-center text-center gap-1">
             <img
               src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
