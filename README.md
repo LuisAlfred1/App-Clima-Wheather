@@ -68,8 +68,7 @@ WeatherApp es una aplicación web desarrollada con React y Vite que permite cons
 
 ## Tecnologías utilizadas
 
-- React
-- Vite
+- React + Vite
 - Tailwind CSS
 - OpenWeather API
 - Lottie (lottie-react)
